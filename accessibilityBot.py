@@ -98,10 +98,15 @@ def reconhecer_voz(audio_baixado_path):
 
 def baixar_foto(id_arquivo):
 	requisicao_1 = requests.get('https://api.telegram.org/bot' + bot_token + '/getFile?file_id=' + id_arquivo)
-	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')	
+	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')
+	full_caminho_arquivo = 'https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo
 
-	requisicao_2 = requests.get('https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo)
-	print('imagem em: ', requisicao_2.url)
+	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'))
+	requisicao_2_json = requisicao_2.json()
+	classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['class']
+	precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score']
+	return 
+
 
 if __name__ == '__main__':
 	thread_bot_telegram()
