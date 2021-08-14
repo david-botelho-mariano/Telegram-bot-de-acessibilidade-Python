@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #bot do telegram
 import telegram
 from telegram.error import NetworkError, Unauthorized
@@ -7,6 +9,7 @@ from pydub import AudioSegment
 
 update_id = None
 #bot do telegram
+
 
 def regex_string(variavel, inicio, fim):
 	frase_array_primario = variavel.split(inicio)
@@ -45,7 +48,7 @@ def echo(bot):
 
 			#audio
 			try:
-				print(update.message)
+				#print(update.message)
 
 				id_arquivo = regex_string(str(update.message), "'file_id': '", "',")
 				voz_transcrita = baixar_audio(id_arquivo)
@@ -55,11 +58,11 @@ def echo(bot):
 				update.message.reply_text("transcricao do audio: " + voz_transcrita)
 
 			except Exception as error:
-				print(error)
+				#print(error)
 
 			#imagem
 			try:
-				print(update.message)
+				#print(update.message)
 
 				id_arquivo = update.message["photo"][2]["file_id"]
 				predicao = baixar_foto(id_arquivo)
@@ -92,10 +95,10 @@ def reconhecer_voz(audio_baixado_path):
 
 	try:
 		text_from_audio = r.recognize_google(audio, language='pt-BR')
-		print("[+]transcricao concluida")
+		#print("[+]transcricao concluida")
 		return text_from_audio
 	except Exception as error:
-		print("[+]falha na transcricao")
+		#print("[+]falha na transcricao")
 		return str(error)
 
 def baixar_foto(id_arquivo):
@@ -107,25 +110,16 @@ def baixar_foto(id_arquivo):
 	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'), headers=headers)
 	requisicao_2_json = requisicao_2.json()
 
+	classe = None
 	precisao = -1
 
 	for x in range(len(requisicao_2_json['images'][0]['classifiers'][0]['classes'])):
-
-		print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score'], precisao)
 
 		if requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score'] > precisao:
 			classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['class']
 			precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score']
 
-	print(classe, precisao)
-
-	#classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['class']
-	#precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score']
-	#print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][-1]['score'])
-	#print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score'])
-
-
-	return str(classe) + ' (precisao de ' + str(precisao * 100) + '%)'
+	return str(classe.encode('utf-8')) + ' (precisao de ' + str(precisao * 100) + '%)'
 
 
 if __name__ == '__main__':
