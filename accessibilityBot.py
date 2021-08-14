@@ -62,7 +62,9 @@ def echo(bot):
 				print(update.message)
 
 				id_arquivo = update.message["photo"][2]["file_id"]
-				baixar_foto(id_arquivo)
+				predicao = baixar_foto(id_arquivo)
+
+				update.message.reply_text("interpretacao da imagem: " + predicao)
 
 			except Exception as error:
 				print(error)
@@ -101,11 +103,29 @@ def baixar_foto(id_arquivo):
 	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')
 	full_caminho_arquivo = 'https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo
 
-	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'))
+	headers = {'Accept-Language': 'pt-br'}
+	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'), headers=headers)
 	requisicao_2_json = requisicao_2.json()
-	classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['class']
-	precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score']
-	return 
+
+	precisao = -1
+
+	for x in range(len(requisicao_2_json['images'][0]['classifiers'][0]['classes'])):
+
+		print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score'], precisao)
+
+		if requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score'] > precisao:
+			classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['class']
+			precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score']
+
+	print(classe, precisao)
+
+	#classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['class']
+	#precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score']
+	#print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][-1]['score'])
+	#print(requisicao_2_json['images'][0]['classifiers'][0]['classes'][0]['score'])
+
+
+	return str(classe) + ' (precisao de ' + str(precisao * 100) + '%)'
 
 
 if __name__ == '__main__':
