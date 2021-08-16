@@ -46,7 +46,7 @@ def echo(bot):
 
 		if update.message:
 
-			print(update.message)
+			#print(update.message)
 
 			#audio
 			if ", 'voice': {'" in str(update.message):
@@ -55,7 +55,7 @@ def echo(bot):
 				id_arquivo = regex_string(str(update.message), "'file_id': '", "',")
 				voz_transcrita = baixar_audio(id_arquivo)
 				voz_transcrita = voz_transcrita.lower()
-				print(voz_transcrita)
+				#print(voz_transcrita)
 
 				update.message.reply_text("transcricao do audio: " + voz_transcrita)
 
@@ -77,14 +77,14 @@ def baixar_audio(id_arquivo):
 	requisicao_2 = requests.get('https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo)
 	open('audio-capturado.oga', 'wb').write(requisicao_2.content)
 
-	print("[+]download do audio concluido")
+	#print("[+]download do audio concluido")
 	return reconhecer_voz('audio-capturado.oga')
 
 
 def reconhecer_voz(audio_baixado_path):
 	sound = AudioSegment.from_file(audio_baixado_path)
 	sound.export("audio-convertido.wav", format="wav")
-	print("[+]audio convertido")
+	#print("[+]audio convertido")
 
 	r = sr.Recognizer()
 	with sr.AudioFile('audio-convertido.wav') as source:
@@ -98,9 +98,13 @@ def baixar_foto(id_arquivo):
 	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')
 	full_caminho_arquivo = 'https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo
 
+	print("[+] download da imagem concluido")
+
 	headers = {'Accept-Language': 'pt-br'}
 	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'), headers=headers)
 	requisicao_2_json = requisicao_2.json()
+
+	print("[+] imagem interpretada")
 
 	output = ""
 
@@ -111,7 +115,7 @@ def baixar_foto(id_arquivo):
 		output += classe + ' (precisao de ' + str(precisao * 100) + '%), '
 
 
-	print(output)
+	#print(output)
 	return str(output.encode('utf-8'))
 
 
