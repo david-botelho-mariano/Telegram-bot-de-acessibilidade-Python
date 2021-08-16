@@ -20,7 +20,7 @@ def regex_string(variavel, inicio, fim):
 def thread_bot_telegram():
 	global update_id
 	global bot
-	global bot_token 
+	global bot_token
 
 	bot_token = '1157046249:AAFVRRiwPd8R-ckdFox1Ck626qyiCFNo6uQ'
 	bot = telegram.Bot(bot_token)
@@ -46,8 +46,10 @@ def echo(bot):
 
 		if update.message:
 
+			print(update.message)
+
 			#audio
-			try:
+			if ", 'voice': {'" in str(update.message):
 				#print(update.message)
 
 				id_arquivo = regex_string(str(update.message), "'file_id': '", "',")
@@ -57,11 +59,8 @@ def echo(bot):
 
 				update.message.reply_text("transcricao do audio: " + voz_transcrita)
 
-			except Exception as error:
-				#print(error)
-
 			#imagem
-			try:
+			elif "}, 'photo': [{'" in str(update.message):
 				#print(update.message)
 
 				id_arquivo = update.message["photo"][2]["file_id"]
@@ -69,13 +68,11 @@ def echo(bot):
 
 				update.message.reply_text("interpretacao da imagem: " + predicao)
 
-			except Exception as error:
-				print(error)
 
 
 def baixar_audio(id_arquivo):
 	requisicao_1 = requests.get('https://api.telegram.org/bot' + bot_token + '/getFile?file_id=' + id_arquivo)
-	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')	
+	caminho_arquivo = regex_string(requisicao_1.text, '"file_path":"', '"')
 
 	requisicao_2 = requests.get('https://api.telegram.org/file/bot' + bot_token + '/' + caminho_arquivo)
 	open('audio-capturado.oga', 'wb').write(requisicao_2.content)
@@ -93,13 +90,8 @@ def reconhecer_voz(audio_baixado_path):
 	with sr.AudioFile('audio-convertido.wav') as source:
 		audio = r.record(source)
 
-	try:
-		text_from_audio = r.recognize_google(audio, language='pt-BR')
-		#print("[+]transcricao concluida")
-		return text_from_audio
-	except Exception as error:
-		#print("[+]falha na transcricao")
-		return str(error)
+	text_from_audio = r.recognize_google(audio, language='pt-BR')
+	return text_from_audio
 
 def baixar_foto(id_arquivo):
 	requisicao_1 = requests.get('https://api.telegram.org/bot' + bot_token + '/getFile?file_id=' + id_arquivo)
@@ -110,16 +102,17 @@ def baixar_foto(id_arquivo):
 	requisicao_2 = requests.get('https://api.us-south.visual-recognition.watson.cloud.ibm.com/v3/classify?url=' + full_caminho_arquivo + '&version=2018-03-19', auth=('apikey', 'rdpaPko36Igl96h-4PAIrChcnF5zZnZi7-mA8vR9kftY'), headers=headers)
 	requisicao_2_json = requisicao_2.json()
 
-	classe = None
-	precisao = -1
+	output = ""
 
 	for x in range(len(requisicao_2_json['images'][0]['classifiers'][0]['classes'])):
 
-		if requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score'] > precisao:
-			classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['class']
-			precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score']
+		classe = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['class']
+		precisao = requisicao_2_json['images'][0]['classifiers'][0]['classes'][x]['score']
+		output += classe + ' (precisao de ' + str(precisao * 100) + '%), '
 
-	return str(classe.encode('utf-8')) + ' (precisao de ' + str(precisao * 100) + '%)'
+
+	print(output)
+	return str(output.encode('utf-8'))
 
 
 if __name__ == '__main__':
