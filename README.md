@@ -23,6 +23,6 @@ Execução do bot de reconhecimento de imagem.
 
 ![image](https://user-images.githubusercontent.com/48680041/141605508-5b7a7023-ece1-4e3b-b899-51992f643cab.png)
 
-Execução do bot de reconhecimento de imagem.
+Bot de transcrição de voz em funcionamento.
 
 ![image](https://user-images.githubusercontent.com/48680041/141605544-29c6cb62-bbb0-47dd-9d70-43352077fb22.png)
