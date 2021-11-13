@@ -1,4 +1,4 @@
-# PIBITI-2020-2021
+# Ferramenta de acessibilidade para aplicativo de mensagens
 
 Bot para o aplicativo Telegram que transcreve áudios e que converte a interpretação de imagens em texto dentro de uma conversa, com o intuito de aumentar a acessibilidade de pessoas com deficiência auditiva ou visual.
 
