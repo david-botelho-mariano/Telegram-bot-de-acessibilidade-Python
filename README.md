@@ -6,13 +6,10 @@ A estrutura do programa foi feita por meio da linguagem de programação Python,
 
 # Bibliotecas necessarias do Python
 
-° speech_recognition 
-
-° pydub 
-
-° python-telegram-bot
-
-° requests
+- speech_recognition 
+- pydub 
+- python-telegram-bot
+- requests
 
 # Tutorial 
 
