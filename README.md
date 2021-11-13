@@ -16,3 +16,5 @@ A estrutura do programa foi feita por meio da linguagem de programação Python,
 1) No terminal de comando (CMD), digite: `python acessibilidadeBot.py`
 
 2) Envie um audio para testar o bot atraves do link: https://t.me/unitins_telegram_bot
+
+![image](https://user-images.githubusercontent.com/48680041/141605508-5b7a7023-ece1-4e3b-b899-51992f643cab.png)
