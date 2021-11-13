@@ -13,6 +13,6 @@ A estrutura do programa foi feita por meio da linguagem de programação Python,
 
 # Tutorial 
 
-1) No terminal de comando (CMD), digite: 'python acessibilidadeBot.py'
+1) No terminal de comando (CMD), digite: `python acessibilidadeBot.py`
 
 2) Envie um audio para testar o bot atraves do link: https://t.me/unitins_telegram_bot
